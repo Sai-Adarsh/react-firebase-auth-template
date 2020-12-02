@@ -10,7 +10,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import Person from '@material-ui/icons/Person';
+import EmojiPeople from '@material-ui/icons/EmojiPeople';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -19,12 +19,10 @@ import firebaseConfig from './firebase.config';
 import { BrowserRouter, Route,Switch} from 'react-router-dom';
 import { useHistory } from 'react-router';
 import Dashboard from './Dashboard';
-import SignupScreen from './SignupScreen';
 
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
-
 
 function Copyright() {
   return (
@@ -59,24 +57,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SignIn = (props) => {
+const SignupScreen = (props) => {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const history = useHistory();
-
-  useEffect(() => {
-    const user = firebase.auth();
-    firebase.auth().onAuthStateChanged(user => {
-      history.push(user ? '/dashboard' : '/');
-    })
-  }, []);
 
   function onClick() {
     console.log(email, password);
     firebase
     .auth()
-    .signInWithEmailAndPassword(email, password)
+    .createUserWithEmailAndPassword(email, password)
     .then(res => {
       if (res.user) {
         //Auth.setLoggedIn(true);
@@ -94,38 +86,51 @@ const SignIn = (props) => {
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
-          <Person />
+          <EmojiPeople />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Sign Up
         </Typography>
         <form className={classes.form} noValidate>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            autoFocus
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            autoComplete="current-password"
-          />
+            <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="name"
+                label="Name"
+                name="name"
+                autoComplete="name"
+                value={name}
+                onChange={e => setName(e.target.value)}
+                autoFocus
+            />
+            <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                autoFocus
+            />
+            <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                autoComplete="current-password"
+            />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
@@ -137,7 +142,7 @@ const SignIn = (props) => {
             color="primary"
             className={classes.submit}
           >
-            Sign In
+            Sign Up
           </Button>
           <Grid container>
             <Grid item xs>
@@ -146,8 +151,8 @@ const SignIn = (props) => {
               </Link>
             </Grid>
             <Grid item>
-              <Link onClick={() => history.push('/signup') } variant="body2">
-                {"Don't have an account? Sign Up"}
+            <Link onClick={() => history.push('/') } variant="body2">
+                {"Already on Funda Factory? Sign In"}
               </Link>
             </Grid>
           </Grid>
@@ -160,18 +165,4 @@ const SignIn = (props) => {
   );
 }
 
-class Stack extends Component{
-  render () {
-    return (
-      <BrowserRouter>
-          <Switch>
-            <Route exact={true} path="/" component={SignIn} />
-            <Route exact={true} path="/dashboard" component={Dashboard} />
-            <Route exact={true} path="/signup" component={SignupScreen} />
-          </Switch>
-     </BrowserRouter>
-    );
-  }
-}
-
-export default Stack;
+export default SignupScreen;
